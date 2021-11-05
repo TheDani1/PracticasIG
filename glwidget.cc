@@ -138,6 +138,7 @@ void _gl_widget::draw_objects()
     switch (Object){
     case OBJECT_TETRAHEDRON:Tetrahedron.draw_line();break;
     case OBJECT_CUBE:Cube.draw_line();break;
+    case OBJECT_ROTATIONFIGURE:Rotation.draw_line();break;
     default:break;
     }
   }
