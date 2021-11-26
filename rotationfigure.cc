@@ -54,44 +54,97 @@ _rotationfigure::_rotationfigure(int n_i, int m_i, float Size){
 
     // SE PUEDE SUSTITUIR VERITCES[J] POR SIZE
 
-    float angle = (M_PI * 4) / n;
+    int n_caras = n;
     //double vuelta_completa = M_PI * 4;
 
     _vertex3f verteaux;
 
-    for(int i = 0; i < n; i++){
+    _vertex3f aux;
+    //calculo el angle inicial (angle de partida)
+    float angle_ini = (2*M_PI)/n_caras;
+    //calculo el nuevo angle (angle de referencia a sumar)
+    float angle_modi = (2*M_PI)/n_caras;
+    int tam = Vertices.size(), cont_c=0;
+    for(int i=0; i<n_caras*tam; ++i){
 
-        for(int j = 0; j < 4; j++){
+        ++cont_c;
+        Vertices.push_back(_vertex3f(Vertices[i%tam].x*cos(angle_ini),
+                                    Vertices[i%tam].y,
+                                    Vertices[i%tam].x*sin(angle_ini)));
 
-            verteaux.x = Size * cos(angle);
-            verteaux.y = Vertices[j].y;
-            verteaux.z = -Size * sin(angle);
-            Vertices.emplace_back(verteaux);
+        Vertices[tam+i]=_vertex3f(Vertices[i%tam].x*cos(angle_ini),
+                                Vertices[i%tam].y,
+                                Vertices[i%tam].x*sin(angle_ini));
+
+        if(cont_c==tam){
+            angle_ini+=angle_modi;
+            cont_c=0;
         }
-
-        angle += (M_PI * 4) / n;
     }
 
     // CREACION TRIANGULOS o GENERACION DE CARAS
 
-    int numero_caras = n;
-    int vertex_n = Vertices.size();
+//    int numero_caras = n;
+//    int vertex_n = Vertices.size();
 
-    Triangles.clear();
+//    Triangles.clear();
 
-    for(int i = 0; i < numero_caras; i++){
+//    for(int i = 0; i < numero_caras; i++){
 
-        // CARA PAR
-        Triangles.push_back(_vertex3ui((vertex_n*i+0)+1, (vertex_n*i+0), (i+1)*vertex_n+0));
-        // CARA IMPAR
-        Triangles.push_back(_vertex3ui((i+1)*vertex_n+0, (i+1)*vertex_n+(0+1), (i*vertex_n+0)+1));
+//        // CARA PARs
+//        Triangles.push_back(_vertex3ui((vertex_n*i+0)+1, (vertex_n*i+0), (i+1)*vertex_n+0));
+//        // CARA IMPAR
+//        Triangles.push_back(_vertex3ui((i+1)*vertex_n+0, (i+1)*vertex_n+(0+1), (i*vertex_n+0)+1));
 
-        // CARA PAR
-        Triangles.push_back(_vertex3ui((0+1, 0, ));
-        // CARA IMPAR
-        Triangles.push_back(_vertex3ui((i+1)*vertex_n+0, (i+1)*vertex_n+(0+1), (i*vertex_n+0)+1));
+//    }
 
-    }
+//    _vertex3ui vertaux;
+
+//    // TAPA SUPERIOR
+
+//    for(unsigned int i=0; i<Vertices.size(); i+=2){
+
+//        vertaux._0= Vertices.size()-1;
+//        vertaux._1= i;
+//        vertaux._2= (i+2)%(Vertices.size()-1);
+//        Triangles.push_back(vertaux);
+
+//    }
+
+//    // TAPA INFERIOR
+
+//    for(unsigned int i=1; i<Vertices.size(); i+=2){
+
+//        vertaux._0= Vertices.size()-1;
+//        vertaux._1= (i+2)%(Vertices.size()-2);
+//        vertaux._2= i;
+//        Triangles.push_back(vertaux);
+
+//    }
+
+    int j=0,cara=0, mod=(n_caras+1)*tam;
+    //int indice=0, pos_t=0;
+    int tope = mod*2;
+    Triangles.resize(tope);
+    for(int i=0;i<mod;++i){
+        if(cara<n_caras){
+            ++cara;
+        }else{
+            cara=0;
+            ++j;
+        }
+            if(cara%2){
+                //creamos la tapa inferior y sus caras (superior)
+                Triangles[i*2]=_vertex3ui(((i*tam)+j)%mod,(((i+1)*tam)+j)%mod,((i*tam)+j+1)%mod);
+                //creamos la tapa superior y sus caras (inferior)
+                Triangles[(2*i)+1]=_vertex3ui((((i+1)*tam)+j)%mod,(((i+1)*tam)+j+1)%mod,((i*tam)+j+1)%mod);
+            }else{
+                //creamos la tapa inferior y sus caras (superior)
+                Triangles[(2*i)+1]=_vertex3ui(((i*tam)+j)%mod,(((i+1)*tam)+j)%mod,((i*tam)+j+1)%mod);
+                //creamos la tapa superior y sus caras (inferior)
+                Triangles[i*2]=_vertex3ui((((i+1)*tam)+j)%mod,(((i+1)*tam)+j+1)%mod,((i*tam)+j+1)%mod);
+            }
+     }
 
 
 
@@ -160,47 +213,19 @@ void _rotationfigure::draw_line(){
 
     glBegin(GL_LINES);
 
-    for (unsigned int i = 0; i < Vertices.size(); i++){
+    for(unsigned int i = 0; i < Triangles.size() ; i++){
 
-        glVertex3fv((GLfloat *) &Vertices[i]);
+        for(int j = 0; j < 3; j++){
 
-    }
+            glVertex3fv((GLfloat *) &Vertices[Triangles[i][j]]);
 
-    for (unsigned int i = 4; i < Vertices.size(); i+=2){
-
-        glVertex3fv((GLfloat *) &Vertices[i]);
+        }
 
     }
 
-//    glVertex3fv((GLfloat *) &Vertices[18]);
-//    glVertex3fv((GLfloat *) &Vertices[6]);
-
-//    glVertex3fv((GLfloat *) &Vertices[9]);
-//    glVertex3fv((GLfloat *) &Vertices[14]);
-
-//    glVertex3fv((GLfloat *) &Vertices[14]);
-//    glVertex3fv((GLfloat *) &Vertices[17]);
-
-//    glVertex3fv((GLfloat *) &Vertices[9]);
-//    glVertex3fv((GLfloat *) &Vertices[6]);
-
-//    glVertex3fv((GLfloat *) &Vertices[8]);
-//    glVertex3fv((GLfloat *) &Vertices[7]);
-
-//    glVertex3fv((GLfloat *) &Vertices[19]);
-//    glVertex3fv((GLfloat *) &Vertices[15]);
-
-//    glVertex3fv((GLfloat *) &Vertices[7]);
-//    glVertex3fv((GLfloat *) &Vertices[19]);
-
-//    glVertex3fv((GLfloat *) &Vertices[15]);
-//    glVertex3fv((GLfloat *) &Vertices[8]);
-
-
-    // 18 6 6 9 9 14 17
-    // 7 8 8 15 15 19 19 7
-
+    glPolygonMode(GL_FRONT_AND_BACK, GL_TRIANGLES);
     glEnd();
+
 
 }
 

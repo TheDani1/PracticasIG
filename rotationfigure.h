@@ -10,7 +10,7 @@ public:
     int n; //(default = 3) número de giros
     int m; //(default = 3) número de puntos
 
-    _rotationfigure(int n = 7, int m = 4, float Size=0.5);
+    _rotationfigure(int n = 120, int m = 4, float Size=0.5);
     void draw_point();
     void draw_fill();
     void draw_line();

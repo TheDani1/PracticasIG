@@ -34,6 +34,7 @@ namespace _gl_widget_ne {
   const float ANGLE_STEP=1;
 
   typedef enum {MODE_DRAW_POINT,MODE_DRAW_LINE,MODE_DRAW_FILL,MODE_DRAW_CHESS} _mode_draw;
+
   typedef enum {OBJECT_TETRAHEDRON,OBJECT_CUBE,OBJECT_ROTATIONFIGURE} _object;
 }
 
@@ -88,3 +89,26 @@ private:
 };
 
 #endif
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
